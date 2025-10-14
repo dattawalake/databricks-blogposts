@@ -46,15 +46,15 @@
 import org.apache.spark.sql.types.{StructType, StructField, StringType, DoubleType, TimestampType}
 
 // Topic names for source and target Event Hubs, replace with your values
-val input_topic_name = "eh6"
+val input_topic_name = "<your-input-topic>"
 
-var rtm_output_topic = "eh7"
-val trigger_output_topic = "eh5"
+var rtm_output_topic = "<your-rtm-output-topic>"
+val trigger_output_topic = "<your-trigger-output-topic>"
 
 // Event Hub configuration, replace as per your setup Kafka/Eventhub
-val EH_NAMESPACE = "gc-streaming"
-val EVENTHUB_POLICY_NAME = dbutils.secrets.get(scope = "datta_eh", key = "eventhub_policy_name")
-val EVENTHUB_KEY = dbutils.secrets.get(scope = "datta_eh", key = "eventhub_key")
+val EH_NAMESPACE = "<your-eventhub-namespace>"
+val EVENTHUB_POLICY_NAME = dbutils.secrets.get(scope = "<your-scope>", key = "<your-key>")
+val EVENTHUB_KEY = dbutils.secrets.get(scope = "<your-scope>", key = "<your-key>")
 
 // Build Event Hub connection string
 val EH_CONN_STR = s"Endpoint=sb://$EH_NAMESPACE.servicebus.windows.net/;" +
