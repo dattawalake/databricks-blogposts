@@ -22,9 +22,11 @@ spark.sql.streaming.realTimeMode.asyncProgressTrackingByDefault.enabled = true  
 ## 1. Fork the harness and apply the overlay
 
 ```bash
+# this blog repo (holds apt-overlay/) + the upstream harness
+git clone https://github.com/databricks-solutions/databricks-blogposts.git
 git clone https://github.com/fmorillo7694/spark-rtm-vs-flink.git
 cd spark-rtm-vs-flink
-bash /path/to/2026-10-rtm-apt-vs-flink/apt-overlay/apply_overlay.sh .
+bash ../databricks-blogposts/2026-10-rtm-apt-vs-flink/apt-overlay/apply_overlay.sh .
 ```
 
 `apply_overlay.sh` copies our APT additions: the A/B run driver (`eks/04d_run_p6_pr.sh`), the

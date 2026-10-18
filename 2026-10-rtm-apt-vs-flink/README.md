@@ -100,13 +100,13 @@ Using this repo to reproduce the benchmark, in order. Full command detail for ea
 **Prerequisites:** AWS account + CLI, `eksctl`, `kubectl`, `helm`, Docker (with `buildx`),
 `sbt` + Maven + JDK 17, and the Spark **4.3.0** runtime (official image / `pip install pyspark==4.3.0`).
 
-You need **two checkouts**: the upstream harness, and this blog repo (which holds the APT overlay).
+You need **two checkouts**: this blog repo (which holds the APT overlay), and the upstream harness.
 
 ```bash
 # Step 1 — clone BOTH repos, then apply the APT overlay onto the upstream harness
 
-# (a) this blog repo (contains apt-overlay/)
-git clone -b rtm-oss-flink-benchamark https://github.com/dattawalake/databricks-blogposts.git
+# (a) this blog repo — contains apt-overlay/ (the folder you are reading)
+git clone https://github.com/databricks-solutions/databricks-blogposts.git
 
 # (b) the upstream RTM-vs-Flink harness
 git clone https://github.com/fmorillo7694/spark-rtm-vs-flink.git
