@@ -23,7 +23,8 @@ cp "$HERE/run/03b_build_push_spark_pr.sh" "$DEST/eks/03b_build_push_spark_pr.sh"
 cp "$HERE/manifests/spark-rtm-pr.yaml"    "$DEST/eks/jobs/p6/spark-rtm-pr.yaml"
 cp "$HERE/manifests/pyspark-rtm-pr.yaml"  "$DEST/eks/jobs/p6/pyspark-rtm-pr.yaml"
 cp "$HERE/image/build.sh"                 "$DEST/spark/pr-image/build.sh"
-[ -f "$HERE/image/spark-pr.Dockerfile" ] && cp "$HERE/image/spark-pr.Dockerfile" "$DEST/eks/images/spark-pr.Dockerfile"
+cp "$HERE/image/pr-image.Dockerfile"      "$DEST/spark/pr-image/Dockerfile"       # used by build.sh (local image)
+[ -f "$HERE/image/spark-pr.Dockerfile" ] && cp "$HERE/image/spark-pr.Dockerfile" "$DEST/eks/images/spark-pr.Dockerfile"  # used by 03b (buildx push)
 
 # --- modified-from-upstream (drop-in replacements) ---
 cp "$HERE/pipeline/RtmPipeline.scala"        "$DEST/spark/scala-rtm/src/main/scala/RtmPipeline.scala"

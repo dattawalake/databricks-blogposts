@@ -79,7 +79,9 @@ Raw summaries: [`sample-results/`](sample-results/) (`eks-apt-on-10min/` + `eks-
 | `apt-overlay/run/03b_build_push_spark_pr.sh` | **net-new** — build + push the APT (4.3-line) Spark image to a registry |
 | `apt-overlay/manifests/spark-rtm-pr.yaml` | **net-new** — Scala/Java RTM SparkApplication (APT flag templated) |
 | `apt-overlay/manifests/pyspark-rtm-pr.yaml` | **net-new** — PySpark RTM SparkApplication (APT flag templated) |
-| `apt-overlay/image/build.sh`, `spark-pr.Dockerfile` | **net-new** — bake a 4.3-line image (pre-GA path) |
+| `apt-overlay/image/build.sh` | **net-new** — stage 4.3 jars/python/connector libs from a Spark source build |
+| `apt-overlay/image/pr-image.Dockerfile` | **net-new** — local image Dockerfile used by `build.sh` |
+| `apt-overlay/image/spark-pr.Dockerfile` | **net-new** — buildx Dockerfile used by `03b` to push the EKS image |
 | `apt-overlay/pipeline/RtmPipeline.scala` | *modified-from-upstream* — adds the APT conf toggle |
 | `apt-overlay/pipeline/rtm_pyspark_measured.py` | *modified-from-upstream* — measured PySpark RTM job + APT toggle |
 | `apt-overlay/pipeline/latency_consumer.py` | *modified-from-upstream* — latency sampler used for these numbers |
