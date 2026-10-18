@@ -22,8 +22,14 @@ spark.sql.streaming.realTimeMode.asyncProgressTrackingByDefault.enabled = true  
 ## 1. Fork the harness and apply the overlay
 
 ```bash
-# this blog repo (holds apt-overlay/) + the upstream harness
-git clone https://github.com/databricks-solutions/databricks-blogposts.git
+# this blog folder only (sparse checkout) + the upstream harness
+git clone --filter=blob:none --no-checkout --depth 1 \
+  https://github.com/databricks-solutions/databricks-blogposts.git
+cd databricks-blogposts
+git sparse-checkout set --no-cone 2026-10-rtm-apt-vs-flink
+git checkout
+cd ..
+
 git clone https://github.com/fmorillo7694/spark-rtm-vs-flink.git
 cd spark-rtm-vs-flink
 bash ../databricks-blogposts/2026-10-rtm-apt-vs-flink/apt-overlay/apply_overlay.sh .

@@ -105,8 +105,13 @@ You need **two checkouts**: this blog repo (which holds the APT overlay), and th
 ```bash
 # Step 1 — clone BOTH repos, then apply the APT overlay onto the upstream harness
 
-# (a) this blog repo — contains apt-overlay/ (the folder you are reading)
-git clone https://github.com/databricks-solutions/databricks-blogposts.git
+# (a) this blog folder only (sparse checkout — avoids pulling every other blog post)
+git clone --filter=blob:none --no-checkout --depth 1 \
+  https://github.com/databricks-solutions/databricks-blogposts.git
+cd databricks-blogposts
+git sparse-checkout set --no-cone 2026-10-rtm-apt-vs-flink
+git checkout
+cd ..
 
 # (b) the upstream RTM-vs-Flink harness
 git clone https://github.com/fmorillo7694/spark-rtm-vs-flink.git
