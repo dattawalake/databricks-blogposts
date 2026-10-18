@@ -1,38 +1,39 @@
-# PR (SPARK-58131) Spark image for EKS = the 4.3.0-SNAPSHOT engine + RTM jars + Kafka connector
-# + S3A jars, baked in. Built FROM the stock multi-arch release image so the OS/entrypoint match;
-# the 4.3.0 engine jars and PySpark are swapped in (jars are arch-independent, so this is safe to
-# build --platform linux/amd64 for m5 nodes). Build context = repo root.
+# APT-enabled Spark app image for EKS (Spark 4.3.0 GA).
 #
-# Prereqs (produced locally, see spark/pr-image/build.sh + the run scripts):
-#   spark/pr-image/jars/     4.3.0-SNAPSHOT assembly jars
-#   spark/pr-image/python/   4.3.0-SNAPSHOT PySpark (pyspark/ + lib/py4j)
-#   spark/pr-image/s3a/      hadoop-aws-3.5.0.jar + bundle-2.35.4.jar  (match Hadoop 3.5.0)
-#   spark/libs-pr/           4.3.0 kafka connector + kafka-clients 3.9.2 + commons-pool2 2.13.1
-#   spark/scala-rtm/target/scala-2.13/scala-rtm_2.13-0.1.0.jar   (sbt package)
-#   spark/java-rtm/target/java-rtm.jar                           (mvn package)
-FROM apache/spark:4.1.2-scala2.13-java17-ubuntu
+# Async Progress Tracking (SPARK-58131) ships INSIDE Spark 4.3.0, so there is NO source build
+# and NO jar-swap: we just start FROM the official 4.3.0 release image and bake in the compiled
+# RTM pipeline jars + the Kafka connector + S3A jars. APT itself is turned on by a *config flag*
+# in the SparkApplication manifest (see eks/jobs/p6/spark-rtm-pr.yaml), not by this image.
+#
+# Build context = repo root. Produces an amd64 image for m5 nodes.
+FROM apache/spark:4.3.0-scala2.13-java17-ubuntu
 
 USER root
 ARG SCALA_BIN=2.13
+ARG SPARK_VER=4.3.0
 
 # Python for the measured PySpark RTM job (executors run no Python — out_ts via reflect()).
 RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3 \
  && ln -sf /usr/bin/python3 /usr/local/bin/python3 && rm -rf /var/lib/apt/lists/*
 
-# --- Swap the engine to 4.3.0-SNAPSHOT (contains the PR) ---
-RUN rm -f /opt/spark/jars/*.jar
-COPY spark/pr-image/jars/   /opt/spark/jars/
-RUN rm -rf /opt/spark/python
-COPY spark/pr-image/python/ /opt/spark/python/
-
-# --- The compiled RTM pipeline jars (Scala + Java) and the measured PySpark job ---
+# The compiled RTM pipeline jars (Scala + Java) and the measured PySpark job.
 COPY spark/scala-rtm/target/scala-${SCALA_BIN}/scala-rtm_${SCALA_BIN}-0.1.0.jar /opt/spark/jars/scala-rtm.jar
 COPY spark/java-rtm/target/java-rtm.jar /opt/spark/jars/java-rtm.jar
 COPY spark/pyspark-bridge/rtm_pyspark_measured.py /opt/spark/work-dir/rtm_pyspark_measured.py
 
-# --- Version-matched Kafka connector (4.3.0) + S3A jars (Hadoop 3.5.0 / AWS SDK v2 2.35.4) ---
-COPY spark/libs-pr/*.jar        /opt/spark/jars/
-COPY spark/pr-image/s3a/*.jar   /opt/spark/jars/
+# Kafka structured-streaming connector + transitive deps, plus hadoop-aws + AWS SDK bundle for
+# S3A durable checkpoints. Pinned to the versions Spark 4.3.0 ships with.
+# NOTE: at 4.3.0 GA, confirm these match the release (kafka.version / commons-pool2.version in
+# Spark's pom, and the Hadoop version the 4.3.0 image bundles) and adjust if needed.
+RUN cd /opt/spark/jars && \
+    for url in \
+      "https://repo1.maven.org/maven2/org/apache/spark/spark-sql-kafka-0-10_${SCALA_BIN}/${SPARK_VER}/spark-sql-kafka-0-10_${SCALA_BIN}-${SPARK_VER}.jar" \
+      "https://repo1.maven.org/maven2/org/apache/spark/spark-token-provider-kafka-0-10_${SCALA_BIN}/${SPARK_VER}/spark-token-provider-kafka-0-10_${SCALA_BIN}-${SPARK_VER}.jar" \
+      "https://repo1.maven.org/maven2/org/apache/kafka/kafka-clients/3.9.2/kafka-clients-3.9.2.jar" \
+      "https://repo1.maven.org/maven2/org/apache/commons/commons-pool2/2.13.1/commons-pool2-2.13.1.jar" \
+      "https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.5.0/hadoop-aws-3.5.0.jar" \
+      "https://repo1.maven.org/maven2/software/amazon/awssdk/bundle/2.35.4/bundle-2.35.4.jar" \
+    ; do curl -fsSL -O "$url"; done
 
-RUN chmod -R a+rX /opt/spark/jars /opt/spark/python
+RUN chmod -R a+rX /opt/spark/jars
 USER spark
