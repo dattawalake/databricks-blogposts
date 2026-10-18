@@ -32,6 +32,12 @@ bash /path/to/2026-10-rtm-apt-vs-flink/apt-overlay/apply_overlay.sh .
 - `eks/jobs/p6/spark-rtm-pr.yaml`, `eks/jobs/p6/pyspark-rtm-pr.yaml`
 - `spark/pr-image/build.sh`, `eks/images/spark-pr.Dockerfile`
 - the modified `RtmPipeline.scala`, `rtm_pyspark_measured.py`, `latency_consumer.py`
+- `eks/p6_kafka_strimzi.yaml` (Kafka pinned to 4.2.0)
+
+> **AWS profile note.** Upstream's `eks/*.sh` bringup scripts hardcode `AWS_PROFILE=default`
+> and `AWS_REGION=us-east-1`. If you use a named profile, either make it your default or edit
+> those lines. Our APT run driver `eks/04d_run_p6_pr.sh` already honors `AWS_PROFILE` /
+> `AWS_REGION` from the environment.
 
 ---
 

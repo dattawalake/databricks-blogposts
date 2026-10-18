@@ -83,6 +83,7 @@ Raw summaries: [`sample-results/`](sample-results/) (`eks-apt-on-10min/` + `eks-
 | `apt-overlay/pipeline/RtmPipeline.scala` | *modified-from-upstream* — adds the APT conf toggle |
 | `apt-overlay/pipeline/rtm_pyspark_measured.py` | *modified-from-upstream* — measured PySpark RTM job + APT toggle |
 | `apt-overlay/pipeline/latency_consumer.py` | *modified-from-upstream* — latency sampler used for these numbers |
+| `apt-overlay/harness/p6_kafka_strimzi.yaml` | *compat* — pins Kafka to **4.2.0** (upstream ships 4.1.0) |
 | `apt-overlay/apply_overlay.sh` | copies the overlay onto a cloned upstream repo |
 | `sample-results/` | our APT-on (10-min) and APT-off (5-min) summary JSONs |
 

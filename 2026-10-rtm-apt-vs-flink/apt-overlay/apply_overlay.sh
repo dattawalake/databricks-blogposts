@@ -30,6 +30,9 @@ cp "$HERE/pipeline/RtmPipeline.scala"        "$DEST/spark/scala-rtm/src/main/sca
 cp "$HERE/pipeline/rtm_pyspark_measured.py"  "$DEST/spark/pyspark-bridge/rtm_pyspark_measured.py"
 cp "$HERE/pipeline/latency_consumer.py"      "$DEST/common/latency_consumer.py"
 
+# --- harness compat fix: pin Kafka to 4.2.0 (upstream ships 4.1.0) ---
+cp "$HERE/harness/p6_kafka_strimzi.yaml"     "$DEST/eks/p6_kafka_strimzi.yaml"
+
 chmod +x "$DEST/eks/04d_run_p6_pr.sh" "$DEST/eks/03b_build_push_spark_pr.sh" "$DEST/spark/pr-image/build.sh" 2>/dev/null || true
 
 echo "==> overlay applied. Next: follow docs/REPRODUCE.md (§3 run the APT off/on A/B)."
