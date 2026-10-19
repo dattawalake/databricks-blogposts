@@ -118,6 +118,7 @@ git clone https://github.com/fmorillo7694/spark-rtm-vs-flink.git
 cd spark-rtm-vs-flink
 
 # (c) apply the overlay (point it at the blog folder you cloned in (a))
+cd ..
 bash ../databricks-blogposts/2026-10-rtm-apt-vs-flink/apt-overlay/apply_overlay.sh .
 ```
 
